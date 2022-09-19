@@ -1,0 +1,39 @@
+version: "3.4"
+services:
+  service-a:
+    build:
+      dockerfile: Dockerfile
+      target: dev
+      context: .
+    env_file: .env
+    volumes:
+      - type: bind
+        consistency: delegated
+        source: .
+        target: /app
+    command: >-
+      bash -c "
+        make build-service-a &&
+        ./.bin/service-a
+      "
+    ports:
+      - $CONTAINER_SERVICE_A_PORT:80
+
+  service-b:
+    build:
+      dockerfile: Dockerfile
+      target: dev
+      context: .
+    env_file: .env
+    volumes:
+      - type: bind
+        consistency: delegated
+        source: .
+        target: /app
+    command: >-
+      bash -c "
+        make build-service-b &&
+        ./.bin/service-b
+      "
+    ports:
+      - $CONTAINER_SERVICE_B_PORT:80

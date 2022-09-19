@@ -1,0 +1,5 @@
+FROM golang:1.19.1 AS go
+
+FROM go AS dev
+ENV INSIDE_DEV_CONTAINER 1
+WORKDIR /app
