@@ -10,6 +10,20 @@ ifndef INSIDE_DEV_CONTAINER
   NOT_INSIDE_DEV_CONTAINER = 1
 endif
 
+gen: compose-build ## run code generation
+	@echo "+ $@"
+	$(call RUN_IN_DEV_CONTAINER, make _gen)
+.PHONY: lint
+
+_gen:
+	go generate ./...
+.PHONY: _gen
+
+lint: compose-build ## run linter
+	@echo "+ $@"
+	$(call RUN_IN_DEV_CONTAINER, golangci-lint run)
+.PHONY: lint
+
 test: ## run all tests
 	@echo "+ $@"
 	go test -race -count 1 -p 8 -parallel 8 -timeout 1m ./...
@@ -19,11 +33,6 @@ test-cover: ## run all tests with code coverage
 	@echo "+ $@"
 	go test -race -count 1 -p 8 -parallel 8 -timeout 1m -coverpkg ./... -coverprofile coverage.out ./...
 .PHONY: test-cover
-
-lint: compose-build ## run linter
-	@echo "+ $@"
-	$(call RUN_IN_DEV_CONTAINER, golangci-lint run)
-.PHONY: lint
 
 bash: compose-build ## run bash inside container for development
  ifndef INSIDE_DEV_CONTAINER
@@ -63,6 +72,14 @@ check-vendor: ## ensure vendor is up-to-date
 	@$(call ENSURE_NO_CHANGES, vendor is outdated: please run 'go mod vendor' before commit)
 	@echo OK
 .PHONY: check-vendor
+
+check-gen: ## ensure generated code is up-to-date
+	@echo "+ $@"
+	@$(call ENSURE_NO_CHANGES, check-gen is unavailable: there are uncommitted changes in git)
+	@$(MAKE) gen
+	@$(call ENSURE_NO_CHANGES, generated code is outdated: please run 'make gen' before commit)
+	@echo OK
+.PHONY: check-gen
 
 compose-build: ## build docker-compose
  ifdef NOT_INSIDE_DEV_CONTAINER
