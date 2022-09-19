@@ -46,6 +46,16 @@ stop: ## stop docker-compose
  endif
 .PHONY: stop
 
+check-tidy: ## ensure go.mod is tidy
+	@echo "+ $@"
+	cp go.mod go.check.mod
+	cp go.sum go.check.sum
+	go mod tidy -modfile=go.check.mod
+	diff -u go.mod go.check.mod
+	diff -u go.sum go.check.sum
+	rm go.check.mod go.check.sum
+.PHONY: check-tidy
+
 compose-build: ## build docker-compose
  ifdef NOT_INSIDE_DEV_CONTAINER
 	@echo "+ $@"
