@@ -10,6 +10,11 @@ ifndef INSIDE_DEV_CONTAINER
   NOT_INSIDE_DEV_CONTAINER = 1
 endif
 
+lint: compose-build ## run linter
+	@echo "+ $@"
+	$(call RUN_IN_DEV_CONTAINER, golangci-lint run)
+.PHONY: lint
+
 bash: compose-build ## run bash inside container for development
  ifndef INSIDE_DEV_CONTAINER
 	@echo "+ $@"
@@ -47,3 +52,6 @@ build-service-b: ## build service-b binary
 	@echo "+ $@"
 	go build -v -o ./.bin/service-b ./service-b
 .PHONY: build-service-b
+
+# $(1) - command to run inside container
+RUN_IN_DEV_CONTAINER = $(if $(NOT_INSIDE_DEV_CONTAINER), docker-compose run --rm --no-deps service-a) $(1)
