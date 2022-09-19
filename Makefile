@@ -10,6 +10,16 @@ ifndef INSIDE_DEV_CONTAINER
   NOT_INSIDE_DEV_CONTAINER = 1
 endif
 
+test: ## run all tests
+	@echo "+ $@"
+	go test -race -count 1 -p 8 -parallel 8 -timeout 1m ./...
+.PHONY: test
+
+test-cover: ## run all tests with code coverage
+	@echo "+ $@"
+	go test -race -count 1 -p 8 -parallel 8 -timeout 1m -coverpkg ./... -coverprofile coverage.out ./...
+.PHONY: test-cover
+
 lint: compose-build ## run linter
 	@echo "+ $@"
 	$(call RUN_IN_DEV_CONTAINER, golangci-lint run)
