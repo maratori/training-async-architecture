@@ -56,6 +56,14 @@ check-tidy: ## ensure go.mod is tidy
 	rm go.check.mod go.check.sum
 .PHONY: check-tidy
 
+check-vendor: ## ensure vendor is up-to-date
+	@echo "+ $@"
+	@$(call ENSURE_NO_CHANGES, check-vendor is unavailable: there are uncommitted changes in git)
+	@go mod vendor
+	@$(call ENSURE_NO_CHANGES, vendor is outdated: please run 'go mod vendor' before commit)
+	@echo OK
+.PHONY: check-vendor
+
 compose-build: ## build docker-compose
  ifdef NOT_INSIDE_DEV_CONTAINER
 	@echo "+ $@"
@@ -72,6 +80,9 @@ build-service-b: ## build service-b binary
 	@echo "+ $@"
 	go build -v -o ./.bin/service-b ./service-b
 .PHONY: build-service-b
+
+# $(1) - error message
+ENSURE_NO_CHANGES = test -z "`git status --porcelain`" || (git diff; echo "\nERROR:$(1)\n"; exit 1)
 
 # $(1) - command to run inside container
 RUN_IN_DEV_CONTAINER = $(if $(NOT_INSIDE_DEV_CONTAINER), docker-compose run --rm --no-deps service-a) $(1)
