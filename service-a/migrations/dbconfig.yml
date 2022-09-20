@@ -1,5 +1,5 @@
 development:
   dialect: postgres
   datasource: postgres://$DB_USER_NAME:$DB_PASSWORD@$DB_HOST/$DB_DATABASE?sslmode=disable
-  dir: service-a/migrations
+  dir: .
   table: migrations
