@@ -20,7 +20,9 @@ TIMEOUT=10
 sleep $TIMEOUT &
 TIMEOUT_PID=$!
 
-OPTS="-config=${SERVICE}/migrations/dbconfig.yml -env=${APP_ENV:-development}"
+cd "${SERVICE}/migrations" || exit 3
+
+OPTS="-config=dbconfig.yml -env=${APP_ENV:-development}"
 while ! sql-migrate status $OPTS; do
   if ! kill -0 $TIMEOUT_PID 2>/dev/null; then
     echo "Failed to connect DB during $TIMEOUT sec"
