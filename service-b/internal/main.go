@@ -7,21 +7,27 @@ import (
 
 	_ "github.com/lib/pq"
 	"github.com/maratori/training-async-architecture/infra"
+	"github.com/maratori/training-async-architecture/proto-hub/servicea"
 	"github.com/maratori/training-async-architecture/proto-hub/serviceb"
 	"github.com/maratori/training-async-architecture/service-b/internal/app"
+	"github.com/maratori/training-async-architecture/service-b/internal/domain"
+	"github.com/maratori/training-async-architecture/service-b/internal/postgres"
 )
 
 func main() {
-	_, closeDB, err := infra.NewDB()
+	db, closeDB, err := infra.NewDB()
 	if err != nil {
 		panic(err)
 	}
 	defer closeDB()
 
-	service := app.NewBService()
+	queries := postgres.New(db)
+	twirpClient := servicea.NewAServiceJSONClient("service-a", http.DefaultClient)
+	service := domain.NewService(app.NewServiceDeps(queries, twirpClient))
+	apiService := app.NewBService(service)
 
 	mux := http.NewServeMux()
-	twirpServer := serviceb.NewBServiceServer(service)
+	twirpServer := serviceb.NewBServiceServer(apiService)
 	mux.Handle(twirpServer.PathPrefix(), twirpServer)
 
 	server := http.Server{
