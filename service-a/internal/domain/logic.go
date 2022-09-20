@@ -8,7 +8,7 @@ import (
 
 type ServiceDeps interface {
 	SaveX(context.Context, X) error
-	CallServiceA(context.Context, string) error
+	CallServiceB(context.Context, string) error
 }
 
 type Service struct {
@@ -32,8 +32,8 @@ func (s *Service) DoIt(ctx context.Context, name string) error {
 		return err
 	}
 
-	if name == "call-a" {
-		errC := s.deps.CallServiceA(ctx, name)
+	if name == "call-b" {
+		errC := s.deps.CallServiceB(ctx, name)
 		if errC != nil {
 			return errC
 		}
