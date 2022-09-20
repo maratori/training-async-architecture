@@ -35,7 +35,7 @@ const _ = twirp.TwirpPackageMinVersion_8_1_0
 // ==================
 
 type BService interface {
-	DoIt(context.Context, *google_protobuf.Empty) (*google_protobuf.Empty, error)
+	DoIt(context.Context, *Request) (*google_protobuf.Empty, error)
 }
 
 // ========================
@@ -84,18 +84,18 @@ func NewBServiceProtobufClient(baseURL string, client HTTPClient, opts ...twirp.
 	}
 }
 
-func (c *bServiceProtobufClient) DoIt(ctx context.Context, in *google_protobuf.Empty) (*google_protobuf.Empty, error) {
+func (c *bServiceProtobufClient) DoIt(ctx context.Context, in *Request) (*google_protobuf.Empty, error) {
 	ctx = ctxsetters.WithPackageName(ctx, "serviceb")
 	ctx = ctxsetters.WithServiceName(ctx, "BService")
 	ctx = ctxsetters.WithMethodName(ctx, "DoIt")
 	caller := c.callDoIt
 	if c.interceptor != nil {
-		caller = func(ctx context.Context, req *google_protobuf.Empty) (*google_protobuf.Empty, error) {
+		caller = func(ctx context.Context, req *Request) (*google_protobuf.Empty, error) {
 			resp, err := c.interceptor(
 				func(ctx context.Context, req interface{}) (interface{}, error) {
-					typedReq, ok := req.(*google_protobuf.Empty)
+					typedReq, ok := req.(*Request)
 					if !ok {
-						return nil, twirp.InternalError("failed type assertion req.(*google_protobuf.Empty) when calling interceptor")
+						return nil, twirp.InternalError("failed type assertion req.(*Request) when calling interceptor")
 					}
 					return c.callDoIt(ctx, typedReq)
 				},
@@ -113,7 +113,7 @@ func (c *bServiceProtobufClient) DoIt(ctx context.Context, in *google_protobuf.E
 	return caller(ctx, in)
 }
 
-func (c *bServiceProtobufClient) callDoIt(ctx context.Context, in *google_protobuf.Empty) (*google_protobuf.Empty, error) {
+func (c *bServiceProtobufClient) callDoIt(ctx context.Context, in *Request) (*google_protobuf.Empty, error) {
 	out := new(google_protobuf.Empty)
 	ctx, err := doProtobufRequest(ctx, c.client, c.opts.Hooks, c.urls[0], in, out)
 	if err != nil {
@@ -176,18 +176,18 @@ func NewBServiceJSONClient(baseURL string, client HTTPClient, opts ...twirp.Clie
 	}
 }
 
-func (c *bServiceJSONClient) DoIt(ctx context.Context, in *google_protobuf.Empty) (*google_protobuf.Empty, error) {
+func (c *bServiceJSONClient) DoIt(ctx context.Context, in *Request) (*google_protobuf.Empty, error) {
 	ctx = ctxsetters.WithPackageName(ctx, "serviceb")
 	ctx = ctxsetters.WithServiceName(ctx, "BService")
 	ctx = ctxsetters.WithMethodName(ctx, "DoIt")
 	caller := c.callDoIt
 	if c.interceptor != nil {
-		caller = func(ctx context.Context, req *google_protobuf.Empty) (*google_protobuf.Empty, error) {
+		caller = func(ctx context.Context, req *Request) (*google_protobuf.Empty, error) {
 			resp, err := c.interceptor(
 				func(ctx context.Context, req interface{}) (interface{}, error) {
-					typedReq, ok := req.(*google_protobuf.Empty)
+					typedReq, ok := req.(*Request)
 					if !ok {
-						return nil, twirp.InternalError("failed type assertion req.(*google_protobuf.Empty) when calling interceptor")
+						return nil, twirp.InternalError("failed type assertion req.(*Request) when calling interceptor")
 					}
 					return c.callDoIt(ctx, typedReq)
 				},
@@ -205,7 +205,7 @@ func (c *bServiceJSONClient) DoIt(ctx context.Context, in *google_protobuf.Empty
 	return caller(ctx, in)
 }
 
-func (c *bServiceJSONClient) callDoIt(ctx context.Context, in *google_protobuf.Empty) (*google_protobuf.Empty, error) {
+func (c *bServiceJSONClient) callDoIt(ctx context.Context, in *Request) (*google_protobuf.Empty, error) {
 	out := new(google_protobuf.Empty)
 	ctx, err := doJSONRequest(ctx, c.client, c.opts.Hooks, c.urls[0], in, out)
 	if err != nil {
@@ -362,7 +362,7 @@ func (s *bServiceServer) serveDoItJSON(ctx context.Context, resp http.ResponseWr
 		s.handleRequestBodyError(ctx, resp, "the json request could not be decoded", err)
 		return
 	}
-	reqContent := new(google_protobuf.Empty)
+	reqContent := new(Request)
 	unmarshaler := protojson.UnmarshalOptions{DiscardUnknown: true}
 	if err = unmarshaler.Unmarshal(rawReqBody, reqContent); err != nil {
 		s.handleRequestBodyError(ctx, resp, "the json request could not be decoded", err)
@@ -371,12 +371,12 @@ func (s *bServiceServer) serveDoItJSON(ctx context.Context, resp http.ResponseWr
 
 	handler := s.BService.DoIt
 	if s.interceptor != nil {
-		handler = func(ctx context.Context, req *google_protobuf.Empty) (*google_protobuf.Empty, error) {
+		handler = func(ctx context.Context, req *Request) (*google_protobuf.Empty, error) {
 			resp, err := s.interceptor(
 				func(ctx context.Context, req interface{}) (interface{}, error) {
-					typedReq, ok := req.(*google_protobuf.Empty)
+					typedReq, ok := req.(*Request)
 					if !ok {
-						return nil, twirp.InternalError("failed type assertion req.(*google_protobuf.Empty) when calling interceptor")
+						return nil, twirp.InternalError("failed type assertion req.(*Request) when calling interceptor")
 					}
 					return s.BService.DoIt(ctx, typedReq)
 				},
@@ -444,7 +444,7 @@ func (s *bServiceServer) serveDoItProtobuf(ctx context.Context, resp http.Respon
 		s.handleRequestBodyError(ctx, resp, "failed to read request body", err)
 		return
 	}
-	reqContent := new(google_protobuf.Empty)
+	reqContent := new(Request)
 	if err = proto.Unmarshal(buf, reqContent); err != nil {
 		s.writeError(ctx, resp, malformedRequestError("the protobuf request could not be decoded"))
 		return
@@ -452,12 +452,12 @@ func (s *bServiceServer) serveDoItProtobuf(ctx context.Context, resp http.Respon
 
 	handler := s.BService.DoIt
 	if s.interceptor != nil {
-		handler = func(ctx context.Context, req *google_protobuf.Empty) (*google_protobuf.Empty, error) {
+		handler = func(ctx context.Context, req *Request) (*google_protobuf.Empty, error) {
 			resp, err := s.interceptor(
 				func(ctx context.Context, req interface{}) (interface{}, error) {
-					typedReq, ok := req.(*google_protobuf.Empty)
+					typedReq, ok := req.(*Request)
 					if !ok {
-						return nil, twirp.InternalError("failed type assertion req.(*google_protobuf.Empty) when calling interceptor")
+						return nil, twirp.InternalError("failed type assertion req.(*Request) when calling interceptor")
 					}
 					return s.BService.DoIt(ctx, typedReq)
 				},
@@ -1090,16 +1090,17 @@ func callClientError(ctx context.Context, h *twirp.ClientHooks, err twirp.Error)
 }
 
 var twirpFileDescriptor0 = []byte{
-	// 161 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x74, 0x8e, 0xb1, 0xca, 0xc2, 0x30,
-	0x14, 0x46, 0x97, 0x9f, 0x9f, 0xd2, 0xc1, 0xa1, 0x83, 0x43, 0x7d, 0x86, 0x24, 0xa0, 0xe0, 0x03,
-	0x84, 0x3a, 0x38, 0xbb, 0xb9, 0x25, 0x21, 0x26, 0x17, 0x4c, 0x6e, 0xb9, 0xbd, 0x11, 0xfa, 0xf6,
-	0x62, 0x63, 0x46, 0xc7, 0xef, 0xf0, 0x1d, 0x38, 0xfd, 0x6e, 0xf1, 0xf4, 0x02, 0xe7, 0xad, 0x9c,
-	0x09, 0x19, 0x87, 0xae, 0xed, 0xf1, 0x10, 0x10, 0xc3, 0xd3, 0xab, 0x8d, 0xdb, 0xf2, 0x50, 0x3e,
-	0xcd, 0xbc, 0xd6, 0xdb, 0x51, 0xf7, 0x9d, 0xbe, 0xd5, 0xe7, 0x70, 0xee, 0xff, 0x26, 0xbc, 0xf2,
-	0xb0, 0x97, 0xd5, 0x90, 0xcd, 0x90, 0x97, 0x8f, 0x31, 0xfe, 0xe0, 0x7a, 0xba, 0xeb, 0x00, 0x1c,
-	0x8b, 0x95, 0x0e, 0x93, 0x4a, 0x86, 0x0c, 0x23, 0x81, 0x62, 0x32, 0x90, 0x21, 0x07, 0x61, 0x96,
-	0x35, 0x3b, 0x61, 0xc8, 0x45, 0x60, 0xef, 0xb8, 0xd0, 0xb7, 0x45, 0xc4, 0x62, 0x55, 0xcb, 0xb4,
-	0xff, 0x1b, 0x3b, 0xbd, 0x03, 0x00, 0x00, 0xff, 0xff, 0x71, 0x6f, 0x27, 0xd8, 0xc9, 0x00, 0x00,
-	0x00,
+	// 192 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x3c, 0xce, 0xbf, 0xab, 0xc2, 0x30,
+	0x10, 0x07, 0x70, 0x0a, 0xe5, 0xbd, 0xbe, 0x0c, 0x0f, 0x5e, 0x86, 0x87, 0x54, 0x04, 0x71, 0x72,
+	0x69, 0x82, 0x3a, 0xbb, 0x94, 0x3a, 0xb8, 0xd6, 0xcd, 0x2d, 0x09, 0x67, 0x1a, 0x30, 0x49, 0x4d,
+	0x2f, 0x42, 0xff, 0x7b, 0xb1, 0x3f, 0xdc, 0xee, 0xbe, 0xdc, 0xdd, 0xe7, 0xc8, 0x6f, 0x07, 0xe1,
+	0x69, 0x14, 0x48, 0xd6, 0x06, 0x8f, 0x9e, 0x66, 0x73, 0x9f, 0x2f, 0xb5, 0xf7, 0xfa, 0x0e, 0x7c,
+	0xc8, 0x65, 0xbc, 0x71, 0xb0, 0x2d, 0xf6, 0xe3, 0xd8, 0x66, 0x45, 0xbe, 0x6b, 0x78, 0x44, 0xe8,
+	0x90, 0x52, 0x92, 0x3a, 0x61, 0x61, 0x91, 0xac, 0x93, 0xed, 0x4f, 0x3d, 0xd4, 0xfb, 0x23, 0xc9,
+	0xca, 0xcb, 0x78, 0x88, 0xee, 0x48, 0x5a, 0xf9, 0x33, 0xd2, 0x3f, 0xf6, 0xa1, 0xa6, 0xd5, 0xfc,
+	0x9f, 0x8d, 0x06, 0x9b, 0x0d, 0x76, 0x7a, 0x1b, 0x65, 0x75, 0x2d, 0xb5, 0xc1, 0x26, 0x4a, 0xa6,
+	0xbc, 0xe5, 0x56, 0x04, 0x81, 0x3e, 0x18, 0x8e, 0x41, 0x18, 0x67, 0x9c, 0x2e, 0x44, 0xd7, 0x3b,
+	0x55, 0x88, 0xa0, 0x1a, 0x83, 0xa0, 0x30, 0x86, 0xe9, 0xcb, 0xa2, 0x89, 0x92, 0xcf, 0x8a, 0xfc,
+	0x1a, 0xb2, 0xc3, 0x2b, 0x00, 0x00, 0xff, 0xff, 0xcd, 0xfd, 0xd2, 0x62, 0xe3, 0x00, 0x00, 0x00,
 }
