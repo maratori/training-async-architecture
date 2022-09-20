@@ -7,8 +7,8 @@ import (
 
 	_ "github.com/lib/pq"
 	"github.com/maratori/training-async-architecture/infra"
-	"github.com/maratori/training-async-architecture/proto-hub/serviceb"
-	"github.com/maratori/training-async-architecture/service-b/app"
+	"github.com/maratori/training-async-architecture/proto-hub/servicea"
+	"github.com/maratori/training-async-architecture/service-a/internal/app"
 )
 
 func main() {
@@ -18,10 +18,10 @@ func main() {
 	}
 	defer closeDB()
 
-	service := app.NewBService()
+	service := app.NewAService()
 
 	mux := http.NewServeMux()
-	twirpServer := serviceb.NewBServiceServer(service)
+	twirpServer := servicea.NewAServiceServer(service)
 	mux.Handle(twirpServer.PathPrefix(), twirpServer)
 
 	server := http.Server{
