@@ -3,6 +3,7 @@ module github.com/maratori/training-async-architecture
 go 1.19
 
 require (
+	github.com/google/uuid v1.3.0
 	github.com/lib/pq v1.10.7
 	github.com/stretchr/testify v1.8.0
 )
