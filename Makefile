@@ -55,6 +55,16 @@ stop: ## stop docker-compose
  endif
 .PHONY: stop
 
+migrate-service-a: compose-build ## apply all migrations to service-a
+	@echo "+ $@"
+	$(call RUN_IN_DEV_CONTAINER, ./scripts/migrate.sh service-a)
+.PHONY: migrate-service-a
+
+migrate-service-b: compose-build ## apply all migrations to service-b
+	@echo "+ $@"
+	$(call RUN_IN_DEV_CONTAINER, ./scripts/migrate.sh service-b)
+.PHONY: migrate-service-b
+
 check-tidy: ## ensure go.mod is tidy
 	@echo "+ $@"
 	cp go.mod go.check.mod
