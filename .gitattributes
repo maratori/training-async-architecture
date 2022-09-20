@@ -1,0 +1,7 @@
+*.proto                    linguist-detectable
+/vendor/**                 linguist-generated -diff -merge
+**/postgres/db.go          linguist-generated
+**/postgres/models.go      linguist-generated
+**/postgres/queries.sql.go linguist-generated
+*.pb.go                    linguist-generated
+*.twirp.go                 linguist-generated
