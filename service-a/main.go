@@ -7,7 +7,7 @@ import (
 
 	_ "github.com/lib/pq"
 	"github.com/maratori/training-async-architecture/infra"
-	"github.com/maratori/training-async-architecture/service-a/api"
+	"github.com/maratori/training-async-architecture/proto-hub/servicea"
 	"github.com/maratori/training-async-architecture/service-a/app"
 )
 
@@ -21,7 +21,7 @@ func main() {
 	service := app.NewAService()
 
 	mux := http.NewServeMux()
-	twirpServer := api.NewAServiceServer(service)
+	twirpServer := servicea.NewAServiceServer(service)
 	mux.Handle(twirpServer.PathPrefix(), twirpServer)
 
 	server := http.Server{

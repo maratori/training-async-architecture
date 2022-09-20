@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-package service_b.api;
+package serviceb;
 
-option go_package = "github.com/maratori/training-async-architecture/service-b/api";
+option go_package = "github.com/maratori/training-async-architecture/proto-hub/serviceb";
 
 import "google/protobuf/empty.proto";
 
