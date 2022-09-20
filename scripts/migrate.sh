@@ -20,7 +20,7 @@ TIMEOUT=10
 sleep $TIMEOUT &
 TIMEOUT_PID=$!
 
-cd "${SERVICE}/migrations" || exit 3
+cd "${SERVICE}/internal/migrations" || exit 3
 
 OPTS="-config=dbconfig.yml -env=${APP_ENV:-development}"
 while ! sql-migrate status $OPTS; do

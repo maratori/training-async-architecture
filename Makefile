@@ -100,12 +100,12 @@ compose-build: ## build docker-compose
 
 build-service-a: ## build service-a binary
 	@echo "+ $@"
-	go build -v -o ./.bin/service-a ./service-a
+	go build -v -o ./.bin/service-a ./service-a/internal
 .PHONY: build-service-a
 
 build-service-b: ## build service-b binary
 	@echo "+ $@"
-	go build -v -o ./.bin/service-b ./service-b
+	go build -v -o ./.bin/service-b ./service-b/internal
 .PHONY: build-service-b
 
 # $(1) - error message
