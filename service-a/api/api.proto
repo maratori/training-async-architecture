@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package service_a.api;
+
+option go_package = "github.com/maratori/training-async-architecture/service-a/api";
+
+import "google/protobuf/empty.proto";
+
+service AService {
+    rpc DoIt (google.protobuf.Empty) returns (google.protobuf.Empty);
+}
