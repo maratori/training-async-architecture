@@ -5,16 +5,25 @@ import (
 	"log"
 	"net/http"
 	"time"
+
+	_ "github.com/lib/pq"
+	"github.com/maratori/training-async-architecture/infra"
 )
 
 func main() {
+	_, closeDB, err := infra.NewDB()
+	if err != nil {
+		panic(err)
+	}
+	defer closeDB()
+
 	server := http.Server{
 		Addr: ":80",
 		Handler: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			body, err := io.ReadAll(r.Body)
-			if err != nil {
+			body, errR := io.ReadAll(r.Body)
+			if errR != nil {
 				w.WriteHeader(http.StatusInternalServerError)
-				_, _ = w.Write([]byte(err.Error()))
+				_, _ = w.Write([]byte(errR.Error()))
 				return
 			}
 			defer r.Body.Close()
@@ -25,8 +34,8 @@ func main() {
 		WriteTimeout:      10 * time.Second,
 		ErrorLog:          log.Default(),
 	}
-	err := server.ListenAndServe()
+	err = server.ListenAndServe()
 	if err != nil {
-		log.Fatalln(err)
+		panic(err)
 	}
 }

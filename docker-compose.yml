@@ -6,6 +6,8 @@ services:
       target: dev
       context: .
     env_file: .env
+    environment:
+      - DB_DATABASE=service_a
     volumes:
       - type: bind
         consistency: delegated
@@ -14,10 +16,14 @@ services:
     command: >-
       bash -c "
         make build-service-a &&
+        ./scripts/wait-port.sh db 5432 &&
+        make migrate-service-a &&
         ./.bin/service-a
       "
     ports:
       - $CONTAINER_SERVICE_A_PORT:80
+    depends_on:
+      - db
 
   service-b:
     build:
@@ -25,6 +31,8 @@ services:
       target: dev
       context: .
     env_file: .env
+    environment:
+      - DB_DATABASE=service_b
     volumes:
       - type: bind
         consistency: delegated
@@ -33,7 +41,19 @@ services:
     command: >-
       bash -c "
         make build-service-b &&
+        ./scripts/wait-port.sh db 5432 &&
+        make migrate-service-b &&
         ./.bin/service-b
       "
     ports:
       - $CONTAINER_SERVICE_B_PORT:80
+    depends_on:
+      - db
+
+  db:
+    image: "postgres:14.5"
+    env_file: .env
+    volumes:
+      - ./scripts/create_databases.sql:/docker-entrypoint-initdb.d/create_databases.sql
+    ports:
+      - $CONTAINER_DB_PORT:5432
