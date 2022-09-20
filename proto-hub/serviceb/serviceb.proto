@@ -7,5 +7,9 @@ option go_package = "github.com/maratori/training-async-architecture/proto-hub/s
 import "google/protobuf/empty.proto";
 
 service BService {
-    rpc DoIt (google.protobuf.Empty) returns (google.protobuf.Empty);
+    rpc DoIt (Request) returns (google.protobuf.Empty);
+}
+
+message Request {
+    string name = 1;
 }

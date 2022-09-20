@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 
+	"github.com/maratori/training-async-architecture/proto-hub/serviceb"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
@@ -12,6 +13,6 @@ func NewBService() *BService {
 	return &BService{}
 }
 
-func (*BService) DoIt(context.Context, *emptypb.Empty) (*emptypb.Empty, error) {
+func (*BService) DoIt(context.Context, *serviceb.Request) (*emptypb.Empty, error) {
 	return &emptypb.Empty{}, nil
 }
