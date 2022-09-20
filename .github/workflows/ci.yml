@@ -29,8 +29,11 @@ jobs:
       - name: Debug with tmate SSH if enabled
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_ssh }}
         uses: mxschmitt/action-tmate@v3
-      - run: make test-cover
-      - uses: codecov/codecov-action@v3
+      - run: make test
+      # test with coverage fails because go builds all packages in the same binary,
+      # and there is a conflict between .proto files
+      #- run: make test-cover
+      #- uses: codecov/codecov-action@v3
 
   lint:
     runs-on: ubuntu-latest

@@ -16,8 +16,6 @@ gen: compose-build ## run code generation
 .PHONY: lint
 
 _gen:
-	sqlc generate --file service-a/postgres/sqlc.yml
-	sqlc generate --file service-b/postgres/sqlc.yml
 	go generate ./...
 .PHONY: _gen
 
