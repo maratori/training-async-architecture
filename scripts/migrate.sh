@@ -6,8 +6,8 @@
 
 SERVICE=$1
 
-echo "Migrating ${DIRECTION:-up} service ${SERVICE} in environment: ${APP_ENV:-development}"
-echo "Using DB_HOST=${DB_HOST} DB_DATABASE=${DB_DATABASE} DB_USER_NAME=${DB_USER_NAME}"
+echo "Migrating ${DIRECTION:-up} service ${SERVICE}"
+echo "Using SVC_DB_HOST=${SVC_DB_HOST} SVC_DB_PORT=${SVC_DB_PORT} SVC_DB_DATABASE=${SVC_DB_DATABASE} SVC_DB_USER_NAME=${SVC_DB_USER_NAME}"
 
 # check sql-migrate installed
 if ! [ -x "$(command -v sql-migrate)" ]; then
@@ -22,8 +22,7 @@ TIMEOUT_PID=$!
 
 cd "${SERVICE}/internal/migrations" || exit 3
 
-OPTS="-config=dbconfig.yml -env=${APP_ENV:-development}"
-while ! sql-migrate status $OPTS; do
+while ! sql-migrate status; do
   if ! kill -0 $TIMEOUT_PID 2>/dev/null; then
     echo "Failed to connect DB during $TIMEOUT sec"
     exit 1
@@ -32,4 +31,4 @@ while ! sql-migrate status $OPTS; do
   sleep 1
 done
 
-sql-migrate "${DIRECTION:-up}" $OPTS
+sql-migrate "${DIRECTION:-up}"

@@ -9,7 +9,7 @@ import (
 
 const (
 	Driver = "postgres"
-	DSN    = "postgres://$DB_USER_NAME:$DB_PASSWORD@$DB_HOST/$DB_DATABASE?sslmode=disable"
+	DSN    = "postgres://$SVC_DB_USER_NAME:$SVC_DB_PASSWORD@$SVC_DB_HOST:$SVC_DB_PORT/$SVC_DB_DATABASE?sslmode=disable"
 )
 
 func NewDB() (*sql.DB, func(), error) {

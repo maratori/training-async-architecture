@@ -1,5 +1,5 @@
 development:
   dialect: postgres
-  datasource: postgres://$DB_USER_NAME:$DB_PASSWORD@$DB_HOST/$DB_DATABASE?sslmode=disable
+  datasource: postgres://$SVC_DB_USER_NAME:$SVC_DB_PASSWORD@$SVC_DB_HOST:$SVC_DB_PORT/$SVC_DB_DATABASE?sslmode=disable
   dir: .
   table: migrations
