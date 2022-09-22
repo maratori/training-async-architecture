@@ -18,17 +18,17 @@ func NewDB() (*sql.DB, func(), error) {
 		return nil, nil, fmt.Errorf("sql.Open: %w", err)
 	}
 
+	err = db.Ping()
+	if err != nil {
+		_ = db.Close()
+		return nil, nil, fmt.Errorf("db.Ping: %w", err)
+	}
+
 	closeDB := func() {
 		errC := db.Close()
 		if errC != nil {
-			log.Println(errC)
+			log.Printf("Can't close DB: %+v\n", errC)
 		}
-	}
-
-	err = db.Ping()
-	if err != nil {
-		closeDB()
-		return nil, nil, fmt.Errorf("db.Ping: %w", err)
 	}
 
 	return db, closeDB, nil

@@ -274,6 +274,3 @@ issues:
         - wrapcheck
 
     # specific to training-async-architecture
-    - path: "main\\.go"
-      linters:
-        - gomnd
