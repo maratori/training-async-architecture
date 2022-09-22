@@ -1,9 +1,10 @@
 package main
 
 import (
+	"context"
 	"log"
 	"net/http"
-	"time"
+	"os"
 
 	_ "github.com/lib/pq"
 	"github.com/maratori/training-async-architecture/infra"
@@ -12,12 +13,24 @@ import (
 	"github.com/maratori/training-async-architecture/service-b/internal/app"
 	"github.com/maratori/training-async-architecture/service-b/internal/domain"
 	"github.com/maratori/training-async-architecture/service-b/internal/postgres"
+	"golang.org/x/sync/errgroup"
 )
 
 func main() {
+	ctx := context.Background()
+	exitCode := 0
+	err := run(ctx)
+	if err != nil {
+		log.Printf("Exit reason: %+v", err)
+		exitCode = 1
+	}
+	os.Exit(exitCode)
+}
+
+func run(ctx context.Context) error {
 	db, closeDB, err := infra.NewDB()
 	if err != nil {
-		panic(err)
+		return err
 	}
 	defer closeDB()
 
@@ -30,15 +43,11 @@ func main() {
 	twirpServer := serviceb.NewBServiceServer(apiService)
 	mux.Handle(twirpServer.PathPrefix(), twirpServer)
 
-	server := http.Server{
-		Addr:              ":80",
-		Handler:           mux,
-		ReadHeaderTimeout: 10 * time.Second,
-		WriteTimeout:      10 * time.Second,
-		ErrorLog:          log.Default(),
-	}
-	err = server.ListenAndServe()
-	if err != nil {
-		panic(err)
-	}
+	eg, ctx := errgroup.WithContext(ctx)
+
+	eg.Go(func() error {
+		return infra.RunHTTPServer(ctx, ":80", mux)
+	})
+
+	return eg.Wait()
 }
