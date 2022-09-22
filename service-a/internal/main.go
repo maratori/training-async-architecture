@@ -34,6 +34,18 @@ func run(ctx context.Context) error {
 	}
 	defer closeDB()
 
+	kafkaSender, err := infra.NewKafkaSender()
+	if err != nil {
+		panic(err)
+	}
+	defer kafkaSender.Close()
+
+	kafkaProcessor, err := infra.NewKafkaProcessor()
+	if err != nil {
+		panic(err)
+	}
+	defer kafkaProcessor.Close()
+
 	queries := postgres.New(db)
 	twirpClient := serviceb.NewBServiceJSONClient("service-b", http.DefaultClient)
 	service := domain.NewService(app.NewServiceDeps(queries, twirpClient))
@@ -47,6 +59,10 @@ func run(ctx context.Context) error {
 
 	eg.Go(func() error {
 		return infra.RunHTTPServer(ctx, ":80", mux)
+	})
+	eg.Go(func() error {
+		kafkaProcessor.Start(ctx)
+		return nil
 	})
 
 	return eg.Wait()
